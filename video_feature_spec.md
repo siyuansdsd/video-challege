@@ -50,6 +50,7 @@ flowchart LR
 
   subgraph Storage
     S3[S3 Private Bucket]
+    RDS[(RDS PostgreSQL)]
   end
 
   subgraph Observability
@@ -66,6 +67,8 @@ flowchart LR
   W -- "S3 Get (Raw Video)" --> S3
   W -- "S3 Put (HLS Segments, Playlist(.m3u8))" --> S3
   W -- "Webhook (Metadata)" --> ApiServer
+  ApiServer -- "SQL read/write" --> RDS
+  US -- "SQL read/write" --> RDS
   App -- "HTTP Poll (Metadata)" --> ApiServer
   App -- "HLS (Playlist(.m3u8))" --> CF
   CF -- "Origin fetch (HLS Segments)" --> S3
@@ -87,7 +90,7 @@ flowchart LR
 
   class App client;
   class CF,ApiServer,US,Q,W compute;
-  class S3 storage;
+  class S3,RDS storage;
   class CW observe;
   class L1 client;
   class L2 compute;
